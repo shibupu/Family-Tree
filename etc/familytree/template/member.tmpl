@@ -1,0 +1,204 @@
+<link rel="stylesheet" type="text/css" href="../css/dhtmlgoodies_calendar.css" />
+<style type="text/css">
+    table {
+        position: relative;
+        float: left;
+    }
+</style>
+
+<script type="text/javascript" src="../js/prototype.js"></script>
+<script type="text/javascript" src="../js/dhtmlgoodies_calendar.js"></script>
+<script type="text/javascript">
+    function validate_form() {
+        if (validate_element('name', 'enter') == false) return;
+        if (validate_element('gender', 'select') == false) return;
+        if (validate_email('email') == false) return;
+        if (validate_photo('photo') == false) return;
+        if (validate_parent() == false) return;
+        if (validate_email('spouse_email') == false) return;
+        if (validate_photo('spouse_photo') == false) return;
+
+        document.member.submit();
+    }
+
+    function validate_element(id, method) {
+        var obj = document.getElementById(id);
+        var val = obj.value;
+        var tit = obj.title;
+        if (val == null || val == '' || val.match(/^\s+$/)) {
+            alert('Please ' + method + ' ' + tit);
+            obj.focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    function validate_number(e) {
+        var charCode = e.which || event.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function validate_email(id) {
+        var obj = document.getElementById(id);
+        var val = obj.value;
+        if (val != '' && val != null) {
+            var atpos  = val.indexOf("@");
+            var dotpos = val.lastIndexOf(".");
+            if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= val.length) {
+                alert('Please enter valid Email');
+                obj.focus();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function validate_photo(id) {
+        var obj = document.getElementById(id);
+        var val = obj.value;
+        if (val != '' && val != null) {
+            var extn = val.slice(val.indexOf(".")).toLowerCase();
+            if (extn != ".jpg" && extn != ".jpe" && extn != ".jpeg" && extn != ".gif" && extn != ".png") {
+                alert('Please select valid Photo');
+                obj.focus();
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function validate_parent() {
+        var obj = document.getElementById('parent');
+        if (obj.options.length > 1 && obj.value == 0) {
+            alert('Please select Parent');
+            obj.focus();
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+<form name="member" action="" method="post" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <td>Name</td>
+            <td><input type="text" name="name" id="name" value="<TMPL_VAR NAME=name>" title="Name" /></td>
+        </tr>
+        <tr>
+            <td>Gender</td>
+            <td>
+                <select name="gender" id="gender" title="Gender">
+                    <option value=""></option>
+                    <option value="M"<TMPL_VAR NAME=M_gender_selected>>M</option>
+                    <option value="F"<TMPL_VAR NAME=F_gender_selected>>F</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Address</td>
+            <td><textarea name="address" id="address" title="Address"><TMPL_VAR NAME=address></textarea></td>
+        </tr>
+        <tr>
+            <td>Phone No.</td>
+            <td><input type="text" name="phone" id="phone" value="<TMPL_VAR NAME=phone>" title="Phone No." onkeypress="return validate_number(event);" /></td>
+        </tr>
+        <tr>
+            <td>Mobile No.</td>
+            <td><input type="text" name="mobile" id="mobile" value="<TMPL_VAR NAME=mobile>" title="Mobile No." onkeypress="return validate_number(event);" /></td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td><input type="text" name="email" id="email" value="<TMPL_VAR NAME=email>" title="Email" /></td>
+        </tr>
+        <tr>
+            <td>Occupation</td>
+            <td><input type="text" name="occupation" id="occupation" value="<TMPL_VAR NAME=occupation>" title="Occupation" /></td>
+        </tr>
+        <tr>
+            <td>Date of Birth</td>
+            <td>
+                <input type="text" name="birth_date" id="birth_date" value="<TMPL_VAR NAME=birth_date>" title="Date of Birth" readonly="readonly" />
+                <img src="../image/calander.gif" style="cursor:pointer;" onclick="displayCalendar($('birth_date'), 'yyyy-mm-dd', this); return false;" />
+            </td>
+        </tr>
+        <tr>
+            <td>Photo</td>
+            <td>
+                <input type="file" name="photo" id="photo" title="Photo" />
+                <TMPL_IF photo><a href="../photo/<TMPL_VAR NAME=photo>" target="_blank">View</a></TMPL_IF>
+            </td>
+        </tr>
+        <tr>
+            <td>Parent</td>
+            <td>
+                <select name="parent" id="parent" title="Parent">
+                    <option value="0"></option>
+                    <TMPL_LOOP parents><option value="<TMPL_VAR NAME=parent_id>"<TMPL_VAR NAME=parent_selected>><TMPL_VAR NAME=parent_name></option>
+                    </TMPL_LOOP>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td align="right"><input type="submit" value="Back" onclick="$('action').value='';" /></td>
+            <td>
+                <input type="hidden" name="id" value="<TMPL_VAR NAME=id>" />
+                <input type="hidden" name="action" id="action" value="<TMPL_VAR NAME=action>" />
+                <input type="button" value="<TMPL_VAR NAME=button>" onclick="validate_form();" />
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>Spouse Name</td>
+            <td><input type="text" name="spouse" id="spouse" value="<TMPL_VAR NAME=spouse>" title="Spouse" /></td>
+        </tr>
+        <tr>
+            <td>Address</td>
+            <td><textarea name="spouse_address" id="spouse_address" title="Address"><TMPL_VAR NAME=spouse_address></textarea></td>
+        </tr>
+        <tr>
+            <td>Phone No.</td>
+            <td><input type="text" name="spouse_phone" id="spouse_phone" value="<TMPL_VAR NAME=spouse_phone>" title="Phone No." onkeypress="return validate_number(event);" /></td>
+        </tr>
+        <tr>
+            <td>Mobile No.</td>
+            <td><input type="text" name="spouse_mobile" id="spouse_mobile" value="<TMPL_VAR NAME=spouse_mobile>" title="Mobile No." onkeypress="return validate_number(event);" /></td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td><input type="text" name="spouse_email" id="spouse_email" value="<TMPL_VAR NAME=spouse_email>" title="Email" /></td>
+        </tr>
+        <tr>
+            <td>Occupation</td>
+            <td><input type="text" name="spouse_occupation" id="spouse_occupation" value="<TMPL_VAR NAME=spouse_occupation>" title="Occupation" /></td>
+        </tr>
+        <tr>
+            <td>Date of Birth</td>
+            <td>
+                <input type="text" name="spouse_birth_date" id="spouse_birth_date" value="<TMPL_VAR NAME=spouse_birth_date>" title="Date of Birth" readonly="readonly" />
+                <img src="../image/calander.gif" style="cursor:pointer;" onclick="displayCalendar($('spouse_birth_date'), 'yyyy-mm-dd', this); return false;" />
+            </td>
+        </tr>
+        <tr>
+            <td>Date of Wedding</td>
+            <td>
+                <input type="text" name="wedding_date" id="wedding_date" value="<TMPL_VAR NAME=wedding_date>" title="Date of Birth" readonly="readonly" />
+                <img src="../image/calander.gif" style="cursor:pointer;" onclick="displayCalendar($('wedding_date'), 'yyyy-mm-dd', this); return false;" />
+            </td>
+        </tr>
+        <tr>
+            <td>Photo</td>
+            <td>
+                <input type="file" name="spouse_photo" id="spouse_photo" title="Photo" />
+                <TMPL_IF spouse_photo><a href="../photo/<TMPL_VAR NAME=spouse_photo>" target="_blank">View</a></TMPL_IF>
+            </td>
+        </tr>
+    </table>
+</form>

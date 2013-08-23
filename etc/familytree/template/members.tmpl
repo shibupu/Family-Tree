@@ -1,0 +1,24 @@
+<table border="1" cellpadding="5" cellspacing="5" style="width: 100%;">
+    <tr>
+        <th>Name</th>
+        <th>Spouse</th>
+        <th><a href="?action=add">Add Member</a></th>
+    </tr>
+    <TMPL_IF members>
+    <TMPL_LOOP members>
+    <tr>
+        <td><TMPL_VAR NAME=name></td>
+        <td><TMPL_VAR NAME=spouse></td>
+        <td>
+            <a href="?action=edit&id=<TMPL_VAR NAME=id>">Edit</a>
+            <a href="?action=del&id=<TMPL_VAR NAME=id>" onclick="return confirm('Are you sure you want to delete this member?');">Delete</a>
+        </td>
+    </tr>
+    </TMPL_LOOP>
+    <TMPL_ELSE>
+        <tr>
+            <td colspan="3" align="center">No members found</td>
+        </tr>
+    </TMPL_IF>
+</table>
+
